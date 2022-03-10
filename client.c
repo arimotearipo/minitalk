@@ -1,64 +1,33 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-// void	convertback(char *byte)
-// {
-// 	int i;
-// 	int num;
-
-// 	i = 0;
-// 	num = 0;
-// 	while (i < 8)
-// 	{
-// 		if (byte[i] == 1)
-// 		{
-// 			num++;
-// 			num <<= 1;
-// 		}
-// 		else
-// 		{
-// 			num <<= 1;
-// 		}
-// 		i++;
-// 	}
-// 	printf("num: %d\n", num);
-// }
+#include "minitalk.h"
 
 void	sendbit(char c, int pid)
 {
-	(void)pid;
 	int	i;
 	int	check;
-	int sum;
 
 	i = 0;
 	check = 128;
-	sum = 0;
 	while (i < 8)
 	{
 		if ((check & c) >= 128)
 		{	
-			// kill(SIGUSR1, pid);
-			printf("1");
-			sum <<= 1;
-			sum += 1;
+			if (kill(pid, SIGUSR1) == -1)
+				write(1, "Error\n", 6);
 		}
 		else
 		{
-			// kill(SIGUSR2, pid);
-			printf("0");
-			sum <<= 1;
+			if (kill(pid, SIGUSR2) == -1)
+				write(1, "Error\n", 6);
 		}
 		c <<= 1;
-		i += 1;;
+		i += 1;
+		usleep(50);
 	}
-	printf("\nfinal sum: %d\n", sum);
 }
 
 void	sendmessage(char *msg, int pid)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (msg[i] != '\0')
@@ -70,11 +39,10 @@ void	sendmessage(char *msg, int pid)
 
 int	main(int ac, char **av)
 {
-	(void)ac;
-	int pid;
+	int	pid;
 
+	(void)ac;
 	pid = atoi(av[1]);
 	sendmessage(av[2], pid);
-	// printf("\n%d\n", (128 & 107));
 	return (0);
 }
