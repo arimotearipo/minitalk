@@ -1,5 +1,7 @@
-#ifndef PUSH_SWAP_H
-# define PUSH_SWAP_H
+#ifndef MINITALK_H
+# define MINITALK_H
+
+# define DELAY 300
 
 # include <stdlib.h>
 # include <unistd.h>

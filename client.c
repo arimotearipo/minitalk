@@ -1,3 +1,4 @@
+#include "libft/libft.h"
 #include "minitalk.h"
 
 void	sendbit(char c, int pid)
@@ -21,7 +22,7 @@ void	sendbit(char c, int pid)
 		}
 		c <<= 1;
 		i += 1;
-		usleep(50);
+		usleep(DELAY);
 	}
 }
 
@@ -37,12 +38,22 @@ void	sendmessage(char *msg, int pid)
 	}
 }
 
+void	instruction(void)
+{
+	write(1, "To use:\n", 8);
+	write(1, "./client \"PID number\" \"message\"\n", 36);
+}
+
 int	main(int ac, char **av)
 {
 	int	pid;
 
-	(void)ac;
-	pid = atoi(av[1]);
+	if (ac != 3)
+	{
+		instruction();
+		return (0);
+	}
+	pid = ft_atoi(av[1]);
 	sendmessage(av[2], pid);
 	return (0);
 }
