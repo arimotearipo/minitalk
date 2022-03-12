@@ -12,21 +12,31 @@ INCLUDES = libft/libft.h minitalk.h
 
 LIB = -L./libft -lft
 
+PRINT = -L./ft_printf -lftprintf
+
 LIBFT = libft.a
 
-all:	$(LIBFT) $(SERVER) $(CLIENT)
+FTPRINTF = ft_printf.a
+
+all:	$(FTPRINTF) $(LIBFT) $(SERVER) $(CLIENT)
+
+$(FTPRINTF):
+			@make -C ft_printf
 
 $(LIBFT):
 			@make -C libft
 
 $(SERVER):	$(SERVERSRC) $(INCLUDES)
-			$(CC) $(FLAGS) $(SERVERSRC) $(LIB) -o $(SERVER)
+			$(CC) $(FLAGS) $(SERVERSRC) $(LIB) $(PRINT) -o $(SERVER)
 
 $(CLIENT):	$(CLIENTSRC) $(INCLUDES)
-			$(CC) $(FLAGS) $(CLIENTSRC) $(LIB) -o $(CLIENT)
+			$(CC) $(FLAGS) $(CLIENTSRC) $(LIB) $(PRINT) -o $(CLIENT)
 
-clean:
-		@make fclean -C libft
+clean:	
+		@make fclean -C libft 
+		@make fclean -C ft_printf 
 
-fclean:	$(CLEAN)
+fclean:	clean
 		$(RM) $(CLIENT) $(SERVER)
+
+re:		fclean all

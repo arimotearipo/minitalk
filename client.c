@@ -1,5 +1,6 @@
-#include "libft/libft.h"
 #include "minitalk.h"
+
+int	g_bytecount = 0;
 
 void	sendbit(char c, int pid)
 {
@@ -10,15 +11,15 @@ void	sendbit(char c, int pid)
 	check = 128;
 	while (i < 8)
 	{
-		if ((check & c) >= 128)
+		if ((check & c) == 128)
 		{	
 			if (kill(pid, SIGUSR1) == -1)
-				write(1, "Error\n", 6);
+				ft_printf("Error\n");
 		}
 		else
 		{
 			if (kill(pid, SIGUSR2) == -1)
-				write(1, "Error\n", 6);
+				ft_printf("Error\n");
 		}
 		c <<= 1;
 		i += 1;
@@ -38,22 +39,35 @@ void	sendmessage(char *msg, int pid)
 	}
 }
 
-void	instruction(void)
+static void	c_handler(int signum, siginfo_t *siginfo, void *context)
 {
-	write(1, "To use:\n", 8);
-	write(1, "./client \"PID number\" \"message\"\n", 36);
+	(void)siginfo;
+	(void)context;
+	if (signum == SIGUSR1 || signum == SIGUSR2)
+		g_bytecount++;
 }
 
 int	main(int ac, char **av)
 {
-	int	pid;
+	struct sigaction	clientsa;
+	int					pid;
+	int					msglen;
 
 	if (ac != 3)
 	{
-		instruction();
+		ft_printf("To use:\n./client \"Server PID\" \"message\"\n");
 		return (0);
 	}
+	clientsa.sa_sigaction = c_handler;
+	clientsa.sa_flags = SA_SIGINFO;
+	sigaction(SIGUSR1, &clientsa, NULL);
+	sigaction(SIGUSR2, &clientsa, NULL);
 	pid = ft_atoi(av[1]);
+	msglen = ft_strlen(av[2]);
 	sendmessage(av[2], pid);
+	if (g_bytecount == msglen)
+		ft_printf("Message received by server!\n");
+	else
+		ft_printf("Message failed to send.\n");
 	return (0);
 }
