@@ -1,6 +1,16 @@
-#include "minitalk.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wwan-taj <wwan-taj@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/15 12:05:02 by wwan-taj          #+#    #+#             */
+/*   Updated: 2022/03/15 12:13:17 by wwan-taj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	g_bytecount = 0;
+#include "minitalk.h"
 
 void	sendbit(char c, int pid)
 {
@@ -37,14 +47,15 @@ void	sendmessage(char *msg, int pid)
 		sendbit(msg[i], pid);
 		i++;
 	}
+	sendbit('\0', pid);
 }
 
 static void	c_handler(int signum, siginfo_t *siginfo, void *context)
 {
 	(void)siginfo;
 	(void)context;
-	if (signum == SIGUSR1 || signum == SIGUSR2)
-		g_bytecount++;
+	if (signum == SIGUSR1)
+		ft_printf("Complete message sent to server!\n");
 }
 
 int	main(int ac, char **av)
@@ -61,13 +72,8 @@ int	main(int ac, char **av)
 	clientsa.sa_sigaction = c_handler;
 	clientsa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &clientsa, NULL);
-	sigaction(SIGUSR2, &clientsa, NULL);
 	pid = ft_atoi(av[1]);
 	msglen = ft_strlen(av[2]);
 	sendmessage(av[2], pid);
-	if (g_bytecount == msglen)
-		ft_printf("Message received by server!\n");
-	else
-		ft_printf("Message failed to send.\n");
 	return (0);
 }
