@@ -6,7 +6,7 @@
 /*   By: wwan-taj <wwan-taj@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 12:05:02 by wwan-taj          #+#    #+#             */
-/*   Updated: 2022/03/15 12:13:17 by wwan-taj         ###   ########.fr       */
+/*   Updated: 2022/06/14 21:27:09 by ari              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,17 @@ int	main(int ac, char **av)
 {
 	struct sigaction	clientsa;
 	int					pid;
-	int					msglen;
 
 	if (ac != 3)
 	{
 		ft_printf("To use:\n./client \"Server PID\" \"message\"\n");
 		return (0);
 	}
+	sleep(5);
 	clientsa.sa_sigaction = c_handler;
 	clientsa.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &clientsa, NULL);
 	pid = ft_atoi(av[1]);
-	msglen = ft_strlen(av[2]);
 	sendmessage(av[2], pid);
 	return (0);
 }

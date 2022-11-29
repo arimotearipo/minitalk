@@ -27,10 +27,10 @@ $(LIBFT):
 			@make -C libft
 
 $(SERVER):	$(SERVERSRC) $(INCLUDES)
-			$(CC) $(FLAGS) $(SERVERSRC) $(LIB) $(PRINT) -o $(SERVER)
+			$(CC) $(FLAGS) $(SERVERSRC) -L./libft -L./ft_printf -o $(SERVER) -lftprintf -lft
 
 $(CLIENT):	$(CLIENTSRC) $(INCLUDES)
-			$(CC) $(FLAGS) $(CLIENTSRC) $(LIB) $(PRINT) -o $(CLIENT)
+			$(CC) $(FLAGS) $(CLIENTSRC) -L./libft -L./ft_printf -o $(CLIENT) -lftprintf -lft
 
 clean:	
 		@make fclean -C libft 
